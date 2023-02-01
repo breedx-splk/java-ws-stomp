@@ -7,26 +7,20 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.CLASS;
 
 @JsonTypeInfo(use= CLASS, property="class")
-public class OutputMessage {
-    private final String time;
+public class ExampleMessage {
+
     private final String from;
     private final String subject;
     private final String body;
 
 
     @JsonCreator
-    public OutputMessage(@JsonProperty("time") String time,
-                         @JsonProperty("from") String from,
-                         @JsonProperty("subject") String subject,
-                         @JsonProperty("body") String body) {
-        this.time = time;
+    public ExampleMessage(@JsonProperty("from") String from,
+                          @JsonProperty("subject") String subject,
+                          @JsonProperty("body") String body) {
         this.from = from;
         this.subject = subject;
         this.body = body;
-    }
-
-    public String getTime() {
-        return time;
     }
 
     public String getFrom() {
@@ -40,4 +34,16 @@ public class OutputMessage {
     public String getBody() {
         return body;
     }
+
+//    public void setFrom(String from) {
+//        this.from = from;
+//    }
+//
+//    public void setSubject(String subject) {
+//        this.subject = subject;
+//    }
+//
+//    public void setBody(String body) {
+//        this.body = body;
+//    }
 }
