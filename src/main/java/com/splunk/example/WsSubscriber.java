@@ -1,6 +1,6 @@
 package com.splunk.example;
 
-import com.splunk.example.model.OutputMessage;
+import com.splunk.example.model.TimestampedMessage;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -62,7 +62,7 @@ public class WsSubscriber extends StompSessionHandlerAdapter {
 
     @Override
     public void handleFrame(StompHeaders headers, Object payload) {
-        OutputMessage msg = (OutputMessage) payload;
+        TimestampedMessage msg = (TimestampedMessage) payload;
         logger.info("Subscriber received:");
         logger.log(Level.INFO, "    {0} | From: {1} | Subject: {2} ",
                 new Object[]{msg.getTime(),  msg.getFrom(), msg.getSubject()});
@@ -81,6 +81,6 @@ public class WsSubscriber extends StompSessionHandlerAdapter {
 
     @Override
     public Type getPayloadType(StompHeaders headers) {
-        return OutputMessage.class;
+        return TimestampedMessage.class;
     }
 }

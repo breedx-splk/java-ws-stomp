@@ -3,17 +3,17 @@ package com.splunk.example.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class OutputMessage {
+public class TimestampedMessage {
     private final String time;
     private final String from;
     private final String subject;
     private final String body;
 
     @JsonCreator
-    public OutputMessage(@JsonProperty("time") String time,
-                         @JsonProperty("from") String from,
-                         @JsonProperty("subject") String subject,
-                         @JsonProperty("body") String body) {
+    public TimestampedMessage(@JsonProperty("time") String time,
+                              @JsonProperty("from") String from,
+                              @JsonProperty("subject") String subject,
+                              @JsonProperty("body") String body) {
         this.time = time;
         this.from = from;
         this.subject = subject;
