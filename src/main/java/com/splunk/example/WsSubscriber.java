@@ -1,6 +1,6 @@
 package com.splunk.example;
 
-import com.splunk.example.model.ExampleMessage;
+import com.splunk.example.model.OutputMessage;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -13,6 +13,7 @@ import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 import javax.annotation.PostConstruct;
+import java.lang.reflect.Type;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -33,11 +34,7 @@ public class WsSubscriber extends StompSessionHandlerAdapter {
     public WsSubscriber() {
         client = new StandardWebSocketClient();
         stompClient = new WebSocketStompClient(client);
-        MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
-//        ObjectMapper mapper = converter.getObjectMapper();
-
-//        mapper.registerModule() // configure to support our types ? boo hoo
-        stompClient.setMessageConverter(converter);
+        stompClient.setMessageConverter(new MappingJackson2MessageConverter());
     }
 
     @PostConstruct
@@ -65,10 +62,11 @@ public class WsSubscriber extends StompSessionHandlerAdapter {
 
     @Override
     public void handleFrame(StompHeaders headers, Object payload) {
-        ExampleMessage msg = (ExampleMessage) payload;
-        logger.info("   From : " + msg.getFrom());
-        logger.info("Subject : " + msg.getSubject());
-        logger.info("   Body : " + msg.getBody());
+        OutputMessage msg = (OutputMessage) payload;
+        logger.info("Subscriber received:");
+        logger.log(Level.INFO, "    {0} | From: {1} | Subject: {2} ",
+                new Object[]{msg.getTime(),  msg.getFrom(), msg.getSubject()});
+        logger.log(Level.INFO, "    Body: {0} ", msg.getBody());
     }
 
     @Override
@@ -79,5 +77,10 @@ public class WsSubscriber extends StompSessionHandlerAdapter {
     @Override
     public void handleTransportError(StompSession session, Throwable exception) {
         logger.log(Level.WARNING, "TRANSPORT ERROR: ", exception);
+    }
+
+    @Override
+    public Type getPayloadType(StompHeaders headers) {
+        return OutputMessage.class;
     }
 }

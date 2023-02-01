@@ -1,6 +1,8 @@
 package com.splunk.example;
 
 import com.splunk.example.model.ExampleMessage;
+import com.splunk.example.util.Items;
+import com.splunk.example.util.Names;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -56,7 +58,8 @@ public class WsPublisher extends StompSessionHandlerAdapter {
             return;
         }
         logger.info("WsPublisher sending a message...");
-        ExampleMessage message = new ExampleMessage("jimbo12", "flibber", "I am here.");
+        String item = Items.random();
+        ExampleMessage message = new ExampleMessage(Names.random(), item, "Imagine the silhouette of a " + item);
         session.send("/app/tube", message);
     }
 

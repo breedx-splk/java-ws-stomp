@@ -2,11 +2,7 @@ package com.splunk.example.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.CLASS;
-
-@JsonTypeInfo(use= CLASS, property="class")
 public class ExampleMessage {
 
     private final String from;
