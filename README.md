@@ -24,11 +24,16 @@ Depending on the protocols in place, it could be even worse -- we could have
 the ability to use or see headers with each protocol frame, the envelope that
 contains messages, and possibly within the message itself! Yikes.
 
-In this little tutorial, we will  ...
+In this session, we will walk through a sample messaging project that does 
+not have comprehensive autoinstrumentation. We will roll up our sleeves and 
+implement manual tracing and context propagation that stitches together 
+pub/sub components into a single trace.
 
 # topology
 
 TODO: describe websockets and stomp
+
+TODO: Describe one process could be several
 
 ```mermaid
 flowchart 
