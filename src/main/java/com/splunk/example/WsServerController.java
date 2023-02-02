@@ -8,7 +8,6 @@ import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
 import io.opentelemetry.context.propagation.TextMapGetter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -42,8 +41,7 @@ public class WsServerController {
 //    }
 
     @MessageMapping("/tube")
-    public void routeTube(ExampleMessage exampleMessage, MessageHeaders msgHeaders,
-                          SimpMessageHeaderAccessor headerAccessor) {
+    public void routeTube(ExampleMessage exampleMessage, SimpMessageHeaderAccessor headerAccessor) {
 
         var traceContext = GlobalOpenTelemetry.getPropagators().getTextMapPropagator()
                 .extract(Context.current(), headerAccessor, new HeadersAdapter());
@@ -55,7 +53,7 @@ public class WsServerController {
                     .setSpanKind(SpanKind.SERVER)
                     .startSpan();
             try(Scope x = serverSpan.makeCurrent()){
-                doRoute(exampleMessage, msgHeaders);
+                doRoute(exampleMessage, headerAccessor);
             }
             finally {
                 serverSpan.end();
@@ -63,11 +61,11 @@ public class WsServerController {
         }
     }
 
-    private void doRoute(ExampleMessage exampleMessage, MessageHeaders msgHeaders) {
+    private void doRoute(ExampleMessage exampleMessage, SimpMessageHeaderAccessor msgHeaders) {
         var time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
         var tsMsg = new TimestampedMessage(time, exampleMessage.getFrom(), exampleMessage.getSubject(), exampleMessage.getBody());
 
-        var headers = new HashMap<>(msgHeaders);
+        var headers = new HashMap<>(msgHeaders.toMap());
         GlobalOpenTelemetry.getPropagators()
                 .getTextMapPropagator()
                 .inject(Context.current(), headers, (carrier, key, value) -> {
