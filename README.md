@@ -38,7 +38,8 @@ We recently had a user who was running into difficulty with
 websocket instrumentation. In their use case, they are using the 
 [STOMP](https://stomp.github.io/) protocol over the websocket 
 with the [Spring project](https://spring.io/)'s websocket and messaging 
-support. In this configuration, they are able to build a pub/sub framework.
+support. In this configuration, they are able to build a pub/sub 
+messaging framework.
 
 The server exposes a websocket. The publisher connects to this websocket
 in order to send messages, and a subscriber connects to the same websocket
@@ -53,15 +54,27 @@ flowchart
 ```
 
 1. The `WsPublisher` connects to the websocket and publishes/sends
-JSON messages in [stomp](https://stomp.github.io/) format to `/app/tube`.
+JSON messages in [STOMP](https://stomp.github.io/) format to `/app/tube`.
 2. The `WsServerController` contains a message mapping that converts 
 `ExampleMessages` into `TimestampedMessages` and sends these to `/topic/messages`.
+This acts as our "business" layer, that you could imagine contains much more sophisticed
+message transformation. 
 3. The `WsSubscriber` also connects to the ws and creates a subscription
 to `/topic/messages`. When it receives a message, it logs the content.
 
-TODO: Describe one process could be several
+For demo simplicity, we have kept this as a single monolithic java process, but there
+is nothing in this concept that mandates that. In a real-world deployment, you would
+expect the 3 components to be deployed as separate processes on separate hosts
+or containers.
 
-# traces
+# out of the box
+
+Out of the box, this configuration yields pretty uninteresting, broken, unlinked traces.
+For example, the sender ts alone:
+
+# adding manual tracing
+
+# improved traces
 
 <img width="650" alt="image" src="https://user-images.githubusercontent.com/75337021/216201486-eda10f36-a33b-4315-aca9-cd9768c1c49e.png">
 
