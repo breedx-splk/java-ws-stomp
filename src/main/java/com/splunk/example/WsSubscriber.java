@@ -61,6 +61,7 @@ public class WsSubscriber extends StompSessionHandlerAdapter {
     }
 
     @Override
+//    @WithSpan("messageReceived")
     public void handleFrame(StompHeaders headers, Object payload) {
         TimestampedMessage msg = (TimestampedMessage) payload;
         logger.info("Subscriber received:");

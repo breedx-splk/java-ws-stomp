@@ -17,14 +17,16 @@ application {
 }
 
 dependencies {
+    annotationProcessor("com.google.auto.service:auto-service:1.0.1")
+    compileOnly("com.google.auto.service:auto-service:1.0.1")
+
+    compileOnly("io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.22.0-alpha")
+    compileOnly("io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi:1.22.0")
     implementation("io.opentelemetry:opentelemetry-sdk:1.21.0")
     implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:1.22.1")
+
     implementation("org.springframework.boot:spring-boot-starter-parent:2.7.8")
     implementation("org.springframework.boot:spring-boot-starter-web:2.7.8")
     implementation("org.springframework.boot:spring-boot-starter-websocket:2.7.8")
-//    implementation("org.springframework:spring-websocket:5.3.25")
     implementation("org.springframework:spring-messaging:5.3.25")
-
-    //implementation("org.testcontainers:testcontainers:1.17.6")
-    //implementation("org.testcontainers:localstack:1.17.6")
 }

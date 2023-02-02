@@ -3,6 +3,8 @@ package com.splunk.example;
 import com.splunk.example.model.ExampleMessage;
 import com.splunk.example.util.Items;
 import com.splunk.example.util.Names;
+import io.opentelemetry.api.GlobalOpenTelemetry;
+import io.opentelemetry.context.Context;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -57,10 +59,25 @@ public class WsPublisher extends StompSessionHandlerAdapter {
             logger.info("Not sending message (no session)");
             return;
         }
+
         logger.info("WsPublisher sending a message...");
         String item = Items.random();
         ExampleMessage message = new ExampleMessage(Names.random(), item, "Imagine the silhouette of a " + item);
-        session.send("/app/tube", message);
+
+        StompHeaders headers = new StompHeaders();
+        headers.setDestination("/app/tube");
+        headers.set("fooooooey", "bar");
+
+        GlobalOpenTelemetry.getPropagators()
+                .getTextMapPropagator()
+                .inject(Context.current(), headers, (carrier, key, value) -> {
+                    if(carrier != null){
+                        carrier.set(key, value);
+                    }
+                });
+
+//        session.send("/app/tube", message);
+        session.send(headers, message);
     }
 
     @Override

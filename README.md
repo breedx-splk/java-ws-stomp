@@ -16,3 +16,7 @@ JSON messages in [stomp](https://stomp.github.io/) format to `/app/tube`.
 `ExampleMessages` into `TimestampedMessages` and sends these to `/topic/messages`.
 3. The `WsSubscriber` also connects to the ws and creates a subscription
 to `/topic/messages`. When it receives a message, it logs the content.
+
+# appendix
+
+* [related discussion](https://github.com/open-telemetry/opentelemetry-java/discussions/3345)
