@@ -67,7 +67,6 @@ public class WsPublisher extends StompSessionHandlerAdapter {
 
         StompHeaders headers = new StompHeaders();
         headers.setDestination("/app/tube");
-        headers.set("fooooooey", "bar");
 
         GlobalOpenTelemetry.getPropagators()
                 .getTextMapPropagator()
