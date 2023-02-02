@@ -173,7 +173,7 @@ In order to put ourselves into the correct trace context, we consult
 and learn that we should implement an interface that lets us get a header value from 
 our `SimpleMessageHeaderAccessor`. For simplicity we build it as an inner class:
 
-```
+```java
 static class HeadersAdapter implements TextMapGetter<SimpMessageHeaderAccessor> {
     @Override
     public String get(@Nullable SimpMessageHeaderAccessor carrier, String key) {
@@ -187,6 +187,59 @@ static class HeadersAdapter implements TextMapGetter<SimpMessageHeaderAccessor> 
 }
 ```
 
+Now that we have this `TextMapGetter` impl, we can extract the incoming trace context from OpenTelemetry:
+
+```java
+var traceContext = GlobalOpenTelemetry.getPropagators()
+                     .getTextMapPropagator()
+                     .extract(Context.current(), headerAccessor, new HeadersAdapter());
+```
+
+But what do we do with it? Well, we make it "current", of course, using a java autocloseable `try` block:
+
+```java
+try (var scope = traceContext.makeCurrent()) {
+  ...
+}
+```
+
+Now that we're parented in the existing scope, we want to create a new span that represents
+our routing action. You'll frequently encounter this common pattern when doing manual instrumenation
+like this:
+
+* get a tracer
+* create a `SpanBuilder`
+* start the span
+* make the new span the current scope
+* <do business logic>
+* end the span
+
+Which in this case looks like this:
+    
+```java
+var serverSpan = tracer.spanBuilder("MessageMapping /tube")
+                .setSpanKind(SpanKind.SERVER)
+                .startSpan();
+try(Scope x = serverSpan.makeCurrent()){
+    doRoute(exampleMessage, headerAccessor);
+}
+finally {
+    serverSpan.end();
+}
+```
+    
+ahen down in `doRoute()` you should notice the same basic header injection method 
+that we used for the publisher:
+```java
+var headers = new HashMap<>(msgHeaders.toMap());
+GlobalOpenTelemetry.getPropagators()
+        .getTextMapPropagator()
+        .inject(Context.current(), headers, (carrier, key, value) -> {
+            if(carrier != null){
+                carrier.put(key, value);
+            }
+        });
+```
 
 ## Subscriber
 
