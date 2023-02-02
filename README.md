@@ -8,7 +8,7 @@ This example uses Spring Boot for most components.
 Tracing in distributed systems can be challenging, and often moreso
 when messaging systems are involved. To stitch together a comprehensive trace,
 the [trace context](https://opentelemetry.io/docs/instrumentation/js/context/)
-must be propagated between components. In HTTP systems, this is relatively
+must be propagated between observed components. In HTTP systems, this is relatively
 straightforward, and the W3C HTTP headers are readily propagated by OpenTelemetry
 instrumentation.
 
@@ -18,11 +18,14 @@ systems to support one-to-many or even many-to-one models. The OpenTelemetry com
 has built a detailed set of specifications around messaging systems that you can 
 [read here](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/semantic_conventions/messaging.md).
 Not every type of messaging system has been covered yet by OpenTelemetry's
-autoinstrumentation.
+autoinstrumentation. 
 
 Depending on the protocols in place, it could be even worse -- we could have 
 the ability to use or see headers with each protocol frame, the envelope that
 contains messages, and possibly within the message itself! Yikes.
+
+When autoinstrumentation is not sufficient or has not yet been built, 
+we can almost always resort to building manual instrumention to help out.
 
 In this session, we will walk through a sample messaging project that does 
 not have comprehensive autoinstrumentation. We will roll up our sleeves and 
@@ -31,9 +34,18 @@ pub/sub components into a single trace.
 
 # topology
 
-TODO: describe websockets and stomp
+We recently had a user who was running into difficulty with 
+websocket instrumentation. In their use case, they are using the 
+[STOMP](https://stomp.github.io/) protocol over the websocket 
+with the [Spring project](https://spring.io/)'s websocket and messaging 
+support. In this configuration, they are able to build a pub/sub framework.
 
-TODO: Describe one process could be several
+The server exposes a websocket. The publisher connects to this websocket
+in order to send messages, and a subscriber connects to the same websocket
+in order to receive messages. A small Spring Controller helps convert the type
+of the message and route to another destination.
+
+It looks something like this:
 
 ```mermaid
 flowchart 
@@ -46,6 +58,8 @@ JSON messages in [stomp](https://stomp.github.io/) format to `/app/tube`.
 `ExampleMessages` into `TimestampedMessages` and sends these to `/topic/messages`.
 3. The `WsSubscriber` also connects to the ws and creates a subscription
 to `/topic/messages`. When it receives a message, it logs the content.
+
+TODO: Describe one process could be several
 
 # traces
 
