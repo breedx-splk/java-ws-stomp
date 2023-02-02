@@ -3,6 +3,9 @@
 Example repo for passing trace context across stomp proto on a websocket.
 This example uses Spring Boot for most components.
 
+The full source code for this walkthrough is available 
+[here](https://github.com/breedx-splk/java-ws-stomp).
+
 # introduction
 
 Tracing in distributed systems can be challenging, and often moreso
@@ -89,8 +92,36 @@ some websocket or messaging/routing internals:
 
 All of these separate traces, none of them linked. We can make this better!
 
-
 # adding manual instrumentation
+
+Let's add some manual OpenTelemetry instrumentation to our project in order
+to pass trace context to our components and to improve our traces. We start by adding
+these two OTel dependencies to our `build.gradle.kts` file:
+
+```kotlin
+dependencies {
+    implementation("io.opentelemetry:opentelemetry-sdk:1.21.0")
+    implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:1.22.1")
+    ...
+}
+```
+
+## Publisher
+
+We'll start with the publisher. Our scheduled job invokes `WsPublisher.sendOne()` every 2 seconds. We'll begin
+by adding the OpenTelemetry `@WithSpan` annotation to this method:
+
+```java
+@WithSpan(kind = SpanKind.PRODUCER)
+private void sendOne() {
+  ...
+}
+```
+
+
+## Server/Router
+
+## Subscriber
 
 # improved traces
 
