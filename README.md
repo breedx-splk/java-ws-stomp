@@ -23,6 +23,8 @@ to `/topic/messages`. When it receives a message, it logs the content.
 
 <img width="610" alt="image" src="https://user-images.githubusercontent.com/75337021/216202081-452f314d-936f-45dd-bf3c-29ea0fa969df.png">
 
+<img width="612" alt="image" src="https://user-images.githubusercontent.com/75337021/216202352-18481f6b-23ee-431c-8466-80e000759665.png">
+
 
 # appendix
 
