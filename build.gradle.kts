@@ -28,5 +28,4 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-parent:2.7.8")
     implementation("org.springframework.boot:spring-boot-starter-web:2.7.8")
     implementation("org.springframework.boot:spring-boot-starter-websocket:2.7.8")
-    implementation("org.springframework:spring-messaging:5.3.25")
 }

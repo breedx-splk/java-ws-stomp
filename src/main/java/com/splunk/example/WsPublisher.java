@@ -77,7 +77,6 @@ public class WsPublisher extends StompSessionHandlerAdapter {
                     }
                 });
 
-//        session.send("/app/tube", message);
         session.send(headers, message);
     }
 
