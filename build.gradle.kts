@@ -20,8 +20,6 @@ dependencies {
     annotationProcessor("com.google.auto.service:auto-service:1.0.1")
     compileOnly("com.google.auto.service:auto-service:1.0.1")
 
-    compileOnly("io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.22.0-alpha")
-    compileOnly("io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi:1.22.0")
     implementation("io.opentelemetry:opentelemetry-sdk:1.21.0")
     implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:1.22.1")
 
