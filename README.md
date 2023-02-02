@@ -17,6 +17,11 @@ JSON messages in [stomp](https://stomp.github.io/) format to `/app/tube`.
 3. The `WsSubscriber` also connects to the ws and creates a subscription
 to `/topic/messages`. When it receives a message, it logs the content.
 
+# traces
+
+<img width="650" alt="image" src="https://user-images.githubusercontent.com/75337021/216201486-eda10f36-a33b-4315-aca9-cd9768c1c49e.png">
+
+
 # appendix
 
 * [related discussion](https://github.com/open-telemetry/opentelemetry-java/discussions/3345)
