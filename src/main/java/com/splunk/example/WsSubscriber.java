@@ -1,6 +1,10 @@
 package com.splunk.example;
 
 import com.splunk.example.model.TimestampedMessage;
+import io.opentelemetry.api.GlobalOpenTelemetry;
+import io.opentelemetry.api.trace.SpanKind;
+import io.opentelemetry.context.Context;
+import io.opentelemetry.context.propagation.TextMapGetter;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -12,6 +16,7 @@ import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 
+import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import java.lang.reflect.Type;
 import java.util.concurrent.Executors;
@@ -63,11 +68,43 @@ public class WsSubscriber extends StompSessionHandlerAdapter {
     @Override
 //    @WithSpan("messageReceived")
     public void handleFrame(StompHeaders headers, Object payload) {
-        TimestampedMessage msg = (TimestampedMessage) payload;
-        logger.info("Subscriber received:");
-        logger.log(Level.INFO, "    {0} | From: {1} | Subject: {2} ",
-                new Object[]{msg.getTime(),  msg.getFrom(), msg.getSubject()});
-        logger.log(Level.INFO, "    Body: {0} ", msg.getBody());
+
+        var traceContext = getTraceContext(headers);
+
+        var tracer = GlobalOpenTelemetry.getTracer("Custom_MessageSubscriber");
+        try (var scope = traceContext.makeCurrent()) {
+            TimestampedMessage msg = (TimestampedMessage) payload;
+            var span = tracer.spanBuilder("WsSubscriber.handleFrame()")
+                    .setSpanKind(SpanKind.CONSUMER)
+                    .setAttribute("x-from", msg.getFrom())
+                    .setAttribute("x-subject", msg.getSubject())
+                    .startSpan();
+            try(var x = span.makeCurrent()) {
+                logger.info("Subscriber received:");
+                logger.log(Level.INFO, "    {0} | From: {1} | Subject: {2} ",
+                        new Object[]{msg.getTime(), msg.getFrom(), msg.getSubject()});
+                logger.log(Level.INFO, "    Body: {0} ", msg.getBody());
+            }
+            finally{
+                span.end();
+            }
+        }
+    }
+
+    private static Context getTraceContext(StompHeaders headers) {
+        return GlobalOpenTelemetry.getPropagators().getTextMapPropagator()
+                .extract(Context.current(), headers, new TextMapGetter<>() {
+                    @Nullable
+                    @Override
+                    public String get(@Nullable StompHeaders carrier, String key) {
+                        return carrier.getFirst(key);
+                    }
+
+                    @Override
+                    public Iterable<String> keys(StompHeaders carrier) {
+                        return headers.toSingleValueMap().keySet();
+                    }
+                });
     }
 
     @Override

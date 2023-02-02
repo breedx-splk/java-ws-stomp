@@ -4,6 +4,7 @@ import com.splunk.example.model.ExampleMessage;
 import com.splunk.example.util.Items;
 import com.splunk.example.util.Names;
 import io.opentelemetry.api.GlobalOpenTelemetry;
+import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
@@ -46,7 +47,7 @@ public class WsPublisher extends StompSessionHandlerAdapter {
         pool.scheduleAtFixedRate(this::sendOne, 2, 2, TimeUnit.SECONDS);
     }
 
-    @WithSpan
+    @WithSpan(kind = SpanKind.PRODUCER)
     private void sendOne() {
         if (!stompClient.isRunning()) {
             logger.info("Publisher is attempting connection.");
