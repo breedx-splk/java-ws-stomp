@@ -118,8 +118,75 @@ private void sendOne() {
 }
 ```
 
+This annotation tells OpenTelemetry to create a new span every time the `sendOne()` method is invoked.
+In keeping with [the specification](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/semantic_conventions/messaging.md), 
+we indicate that the span should be a `PRODUCER`. Because this is the start of our pub/sub process,
+there is no parent and this will be our root span in the trace.
+
+The component downstream from us needs to know our trace context, which includes our span
+ID parentage. Right now, however, our context is not propagated into the STOMP data frames 
+and we need to write a little code.
+
+To do this, we make a new instance of `StompHeaders` and set our message destination.
+
+```java
+StompHeaders headers = new StompHeaders();
+headers.setDestination("/app/tube");
+```
+
+We then leverage the OpenTelemetry API to set our current trace context into the 
+context propagation mechanism, which is implemented with the TextMapPropagator).
+
+```java
+GlobalOpenTelemetry.getPropagators()
+    .getTextMapPropagator()
+    .inject(Context.current(), headers, (carrier, key, value) -> {
+        if(carrier != null){
+            carrier.set(key, value);
+        }
+    });
+```
+
+What's cool about this approach is that, as a user, we are don't have to know the 
+inner workings of the propagation mechanism. For example, we don't ever have to reference
+the name of the context header or the format of the data inside the propagation value! Our
+lambda just serves as a litte type adapter for the specific implementation.
+
+That's it for the publisher. Now we'll move on to the server side router.
 
 ## Server/Router
+
+Our routing method on the server side is `WsServerController.routeTube()`, and it is annotated
+with Spring's `@MessageMapping`. From [the documentation](https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#supported-method-arguments) we have learned
+that we can add a `SimpMessageHeaderAccessor` parameter to our method so that we can 
+access the headers present on the incoming message. So our signature looks like this:
+
+```java
+@MessageMapping("/tube")
+public void routeTube(ExampleMessage exampleMessage, SimpMessageHeaderAccessor headerAccessor) {
+    ...
+}
+```
+
+In order to put ourselves into the correct trace context, we consult
+[the upstream otel documentation](https://opentelemetry.io/docs/instrumentation/java/manual/#context-propagation) 
+and learn that we should implement an interface that lets us get a header value from 
+our `SimpleMessageHeaderAccessor`. For simplicity we build it as an inner class:
+
+```
+static class HeadersAdapter implements TextMapGetter<SimpMessageHeaderAccessor> {
+    @Override
+    public String get(@Nullable SimpMessageHeaderAccessor carrier, String key) {
+        return carrier.getFirstNativeHeader(key);
+    }
+
+    @Override
+    public Iterable<String> keys(SimpMessageHeaderAccessor carrier) {
+        return carrier.toMap().keySet();
+    }
+}
+```
+
 
 ## Subscriber
 
@@ -135,3 +202,6 @@ private void sendOne() {
 # appendix
 
 * [related discussion](https://github.com/open-telemetry/opentelemetry-java/discussions/3345)
+* [relevant spring websocket tutorial](https://www.baeldung.com/websockets-spring)
+* [relvant spring websocket client tutorial](https://www.baeldung.com/websockets-api-java-spring-client)
+* heavily utilized the upstream otel java documentation around [manual context propagation](https://opentelemetry.io/docs/instrumentation/java/manual/#context-propagation)
