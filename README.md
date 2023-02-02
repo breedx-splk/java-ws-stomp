@@ -3,7 +3,32 @@
 Example repo for passing trace context across stomp proto on a websocket.
 This example uses Spring Boot for most components.
 
+# introduction
+
+Tracing in distributed systems can be challenging, and often moreso
+when messaging systems are involved. To stitch together a comprehensive trace,
+the [trace context](https://opentelemetry.io/docs/instrumentation/js/context/)
+must be propagated between components. In HTTP systems, this is relatively
+straightforward, and the W3C HTTP headers are readily propagated by OpenTelemetry
+instrumentation.
+
+Messaging systems almost always have headers too, but, depending on the implementation, 
+can be tricky to implement. This is further complicated by ability of many messaging
+systems to support one-to-many or even many-to-one models. The OpenTelemetry community
+has built a detailed set of specifications around messaging systems that you can 
+[read here](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/semantic_conventions/messaging.md).
+Not every type of messaging system has been covered yet by OpenTelemetry's
+autoinstrumentation.
+
+Depending on the protocols in place, it could be even worse -- we could have 
+the ability to use or see headers with each protocol frame, the envelope that
+contains messages, and possibly within the message itself! Yikes.
+
+In this little tutorial, we will  ...
+
 # topology
+
+TODO: describe websockets and stomp
 
 ```mermaid
 flowchart 
