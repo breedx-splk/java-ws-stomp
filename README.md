@@ -204,7 +204,7 @@ try (var scope = traceContext.makeCurrent()) {
 ```
 
 Now that we're parented in the existing scope, we want to create a new span that represents
-our routing action. You'll frequently encounter this common pattern when doing manual instrumenation
+our routing action. You'll frequently encounter this common pattern when doing manual instrumentation
 like this:
 
 * get a tracer
