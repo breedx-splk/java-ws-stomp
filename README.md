@@ -135,7 +135,7 @@ headers.setDestination("/app/tube");
 ```
 
 We then leverage the OpenTelemetry API to set our current trace context into the 
-context propagation mechanism, which is implemented with the TextMapPropagator).
+context propagation mechanism, which is implemented with the TextMapPropagator.
 
 ```java
 GlobalOpenTelemetry.getPropagators()
