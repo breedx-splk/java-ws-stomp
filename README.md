@@ -328,7 +328,7 @@ OpenTelemetry Java APIs and how to achieve trace context propagation by reading 
 messaging headers via implementation-specific adaptors.
 
 We rolled up our sleeves and got our hands dirty with some code, but it wasn't that bad
-and the results look good.
+and the results are looking good.
 
 This much deeper level of observability is a wildly powerful tool that helps
 developers and operators better understand the flow of data through their systems.
