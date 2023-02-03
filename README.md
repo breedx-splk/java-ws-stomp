@@ -21,7 +21,7 @@ systems to support one-to-many or even many-to-one models. The OpenTelemetry com
 has built a detailed set of specifications around messaging systems that you can 
 [read here](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/semantic_conventions/messaging.md).
 Not every type of messaging system has been covered yet by OpenTelemetry's
-autoinstrumentation. 
+Java auto-instrumentation. 
 
 Depending on the protocols in place, it could be even worse -- we could have 
 the ability to use or see headers with each protocol frame, the envelope that
