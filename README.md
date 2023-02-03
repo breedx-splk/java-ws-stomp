@@ -303,7 +303,10 @@ in our distributed trace.
     
 # improved traces
 
-<img width="650" alt="image" src="https://user-images.githubusercontent.com/75337021/216201486-eda10f36-a33b-4315-aca9-cd9768c1c49e.png">
+Now that we've manually instrumeted our code, we run the app for a while 
+and see how the trace has improved. Our messaging trace now looks something like this:
+
+<img width="649" alt="image" src="https://user-images.githubusercontent.com/75337021/216484222-06e17d3c-2981-4531-a3b9-6a44e5cc3577.png">
 
 <img width="610" alt="image" src="https://user-images.githubusercontent.com/75337021/216202081-452f314d-936f-45dd-bf3c-29ea0fa969df.png">
 
