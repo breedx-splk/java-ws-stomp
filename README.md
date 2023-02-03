@@ -348,5 +348,5 @@ complete, and there are several noteworthy shortcomings (possible improvements):
 
 * [related discussion](https://github.com/open-telemetry/opentelemetry-java/discussions/3345)
 * [relevant spring websocket tutorial](https://www.baeldung.com/websockets-spring)
-* [relvant spring websocket client tutorial](https://www.baeldung.com/websockets-api-java-spring-client)
+* [relevant spring websocket client tutorial](https://www.baeldung.com/websockets-api-java-spring-client)
 * heavily utilized the upstream otel java documentation around [manual context propagation](https://opentelemetry.io/docs/instrumentation/java/manual/#context-propagation)
