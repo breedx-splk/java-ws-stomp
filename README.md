@@ -112,7 +112,7 @@ We'll start with the publisher. Our scheduled job invokes `WsPublisher.sendOne()
 by adding the OpenTelemetry `@WithSpan` annotation to this method:
 
 ```java
-@WithSpan(kind = SpanKind.PRODUCER)
+@WithSpan(value="/app/tube publish", kind = SpanKind.PRODUCER)
 private void sendOne() {
   ...
 }
@@ -211,11 +211,11 @@ like this:
 * create a `SpanBuilder`
 * start the span
 * make the new span the current scope
-* <do business logic>
+* (do business logic)
 * end the span
 
 Which in this case looks like this:
-    
+
 ```java
 var serverSpan = tracer.spanBuilder("MessageMapping /tube")
                 .setSpanKind(SpanKind.SERVER)
@@ -227,22 +227,77 @@ finally {
     serverSpan.end();
 }
 ```
+
+I chose `SERVER` here, but I'm not 100% sure that's right and maybe there's a case to be made for `CONSUMER`.
     
-ahen down in `doRoute()` you should notice the same basic header injection method 
+Down in `doRoute()` you should notice the same basic header injection method 
 that we used for the publisher:
 ```java
 var headers = new HashMap<>(msgHeaders.toMap());
 GlobalOpenTelemetry.getPropagators()
-        .getTextMapPropagator()
-        .inject(Context.current(), headers, (carrier, key, value) -> {
-            if(carrier != null){
-                carrier.put(key, value);
-            }
-        });
+    .getTextMapPropagator()
+    .inject(Context.current(), headers, (carrier, key, value) -> {
+        if(carrier != null){
+            carrier.put(key, value);
+        }
+    });
 ```
+    
+That's all for the server routing side. A new trace will be created, and our 
+context will be put into the routed message headers. 
 
 ## Subscriber
+    
+The subscriber is the last piece of our puzzle, and the business method is `WsSubscriber.handleFrame()`, and 
+this method receives the `StopHeaders` and the payload message object instance. 
+    
+Just like we did with the router, we extract the incoming trace context from OpenTelemetry. Rather than create an 
+inner class, this time we used an anonymous class and hid this away in a method:
+    
+```java
+private static Context getTraceContext(StompHeaders headers) {
+return GlobalOpenTelemetry.getPropagators().getTextMapPropagator()
+        .extract(Context.current(), headers, new TextMapGetter<>() {
+            @Nullable
+            @Override
+            public String get(@Nullable StompHeaders carrier, String key) {
+                return carrier.getFirst(key);
+            }
 
+            @Override
+            public Iterable<String> keys(StompHeaders carrier) {
+                return headers.toSingleValueMap().keySet();
+            }
+        });
+}
+```
+    
+And just like before, we call this in order to "makeCurrent()" that context, then within
+that context we create our new `CONSUMER` span:
+    
+```java
+
+var traceContext = getTraceContext(headers);
+try (var scope = traceContext.makeCurrent()) {
+    TimestampedMessage msg = (TimestampedMessage) payload;
+    var tracer = GlobalOpenTelemetry.getTracer("Custom_MessageSubscriber");
+    var span = tracer.spanBuilder("/topic/messages receive")
+            .setSpanKind(SpanKind.CONSUMER)
+            .setAttribute("x-from", msg.getFrom())
+            .setAttribute("x-subject", msg.getSubject())
+            .startSpan();
+    try(var x = span.makeCurrent()) {
+        <message handling business logic goes here>
+    }
+    finally{
+        span.end();
+    }
+}
+```
+
+It's worth noting that the message `from` and `subject` fields are appended to 
+the `CONSUMER` span in the form of custom attributes.
+    
 # improved traces
 
 <img width="650" alt="image" src="https://user-images.githubusercontent.com/75337021/216201486-eda10f36-a33b-4315-aca9-cd9768c1c49e.png">
@@ -251,6 +306,15 @@ GlobalOpenTelemetry.getPropagators()
 
 <img width="612" alt="image" src="https://user-images.githubusercontent.com/75337021/216202352-18481f6b-23ee-431c-8466-80e000759665.png">
 
+    
+# improvements
+    
+This exercise was intended to show how manual instrumentation could be used to 
+stitch together messaging components via trace context propagation. It should not be considered
+complete, and there are several noteworthy shortcomings:
+    
+* `messaging.system` and `messaging.operation` required attributes are missing
+* 
 
 # appendix
 
