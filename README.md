@@ -308,7 +308,13 @@ and see how the trace has improved. Our messaging trace now looks something like
 
 <img width="649" alt="image" src="https://user-images.githubusercontent.com/75337021/216484222-06e17d3c-2981-4531-a3b9-6a44e5cc3577.png">
 
-<img width="610" alt="image" src="https://user-images.githubusercontent.com/75337021/216202081-452f314d-936f-45dd-bf3c-29ea0fa969df.png">
+Much nicer! We see that the topmost root span is created from our publisher, and it has a child 
+span for the processor/router and another child span for the final subscriber.
+
+The span details for the publisher show the exact class and method that originated
+the message:
+
+<img width="594" alt="image" src="https://user-images.githubusercontent.com/75337021/216484897-d5e1fc0e-2716-4f0e-a7b4-f54ed5f0c956.png">
 
 <img width="612" alt="image" src="https://user-images.githubusercontent.com/75337021/216202352-18481f6b-23ee-431c-8466-80e000759665.png">
 
@@ -317,10 +323,12 @@ and see how the trace has improved. Our messaging trace now looks something like
     
 This exercise was intended to show how manual instrumentation could be used to 
 stitch together messaging components via trace context propagation. It should not be considered
-complete, and there are several noteworthy shortcomings:
+complete, and there are several noteworthy shortcomings (possible improvements):
     
 * `messaging.system` and `messaging.operation` required attributes are missing
-* 
+* additional messaging attributes (like `messaging.message.id`) SHOULD be added to these spans
+* the `process` span is a little light on details and could be improved by adding code information.
+* some of the glue code is duplicated
 
 # appendix
 
