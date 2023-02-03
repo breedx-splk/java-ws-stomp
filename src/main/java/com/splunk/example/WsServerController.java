@@ -49,7 +49,7 @@ public class WsServerController {
 
         try (var scope = traceContext.makeCurrent()) {
             // Automatically use the extracted SpanContext as parent.
-            var serverSpan = tracer.spanBuilder("MessageMapping /tube")
+            var serverSpan = tracer.spanBuilder("/tube process")
                     .setSpanKind(SpanKind.SERVER)
                     .startSpan();
             try(Scope x = serverSpan.makeCurrent()){

@@ -70,11 +70,10 @@ public class WsSubscriber extends StompSessionHandlerAdapter {
     public void handleFrame(StompHeaders headers, Object payload) {
 
         var traceContext = getTraceContext(headers);
-
-        var tracer = GlobalOpenTelemetry.getTracer("Custom_MessageSubscriber");
         try (var scope = traceContext.makeCurrent()) {
             TimestampedMessage msg = (TimestampedMessage) payload;
-            var span = tracer.spanBuilder("WsSubscriber.handleFrame()")
+            var tracer = GlobalOpenTelemetry.getTracer("Custom_MessageSubscriber");
+            var span = tracer.spanBuilder("/topic/messages receive")
                     .setSpanKind(SpanKind.CONSUMER)
                     .setAttribute("x-from", msg.getFrom())
                     .setAttribute("x-subject", msg.getSubject())

@@ -47,7 +47,7 @@ public class WsPublisher extends StompSessionHandlerAdapter {
         pool.scheduleAtFixedRate(this::sendOne, 2, 2, TimeUnit.SECONDS);
     }
 
-    @WithSpan(kind = SpanKind.PRODUCER)
+    @WithSpan(value="/app/tube publish", kind = SpanKind.PRODUCER)
     private void sendOne() {
         if (!stompClient.isRunning()) {
             logger.info("Publisher is attempting connection.");
