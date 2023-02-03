@@ -297,7 +297,9 @@ try (var scope = traceContext.makeCurrent()) {
 ```
 
 It's worth noting that the message `from` and `subject` fields are appended to 
-the `CONSUMER` span in the form of custom attributes.
+the `CONSUMER` span in the form of custom attributes. That not strictly required,
+of course, but adds a little more observable detail and depth to the final component
+in our distributed trace.
     
 # improved traces
 
