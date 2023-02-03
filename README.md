@@ -249,8 +249,8 @@ received by our subscriber.
 
 ## Subscriber
     
-The subscriber is the last piece of our puzzle, and the business method is `WsSubscriber.handleFrame()`, and 
-this method receives the `StopHeaders` and the payload message object instance. 
+The subscriber is the last piece of our puzzle, and the business method is `WsSubscriber.handleFrame()`.
+This method receives the STOMP message headers (`StompHeaders`) and the payload message object instance. 
     
 Just like we did with the router, we extract the incoming trace context from OpenTelemetry. Rather than create an 
 inner class, this time we used an anonymous class and hid this away in a method:
