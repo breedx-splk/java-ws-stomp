@@ -27,11 +27,11 @@ Depending on the protocols in place, it could be even worse -- we could have
 the ability to use or see headers with each protocol frame, the envelope that
 contains messages, and possibly within the message itself! Yikes.
 
-When autoinstrumentation is not sufficient or has not yet been built, 
+When auto-instrumentation is not sufficient or has not yet been built, 
 we can almost always resort to building manual instrumentation to help out.
 
 In this session, we will walk through a sample messaging project that does 
-not have comprehensive autoinstrumentation. We will roll up our sleeves and 
+not have comprehensive auto-instrumentation. We will roll up our sleeves and 
 implement manual tracing and context propagation that stitches together 
 pub/sub components into a single trace.
 
@@ -60,7 +60,7 @@ flowchart
 JSON messages in [STOMP](https://stomp.github.io/) format to `/app/tube`.
 2. The `WsServerController` contains a message mapping that converts 
 `ExampleMessages` into `TimestampedMessages` and sends these to `/topic/messages`.
-This acts as our "business" layer, that you could imagine contains much more sophisticed
+This acts as our "business" layer, that you could imagine contains much more sophisticated
 message transformation. 
 3. The `WsSubscriber` also connects to the ws and creates a subscription
 to `/topic/messages`. When it receives a message, it logs the content.
