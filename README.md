@@ -150,7 +150,7 @@ GlobalOpenTelemetry.getPropagators()
 What's cool about this approach is that, as a user, we don't have to know the 
 inner workings of the propagation mechanism. For example, we don't ever have to reference
 the name of the context header or the format of the data inside the propagation value! Our
-lambda just serves as a litte type adapter for the specific implementation.
+lambda just serves as a little type adapter for the specific implementation.
 
 That's it for the publisher. Now we'll move on to the server side router.
 
