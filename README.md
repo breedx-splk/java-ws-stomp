@@ -257,19 +257,19 @@ inner class, this time we used an anonymous class and hid this away in a method:
     
 ```java
 private static Context getTraceContext(StompHeaders headers) {
-return GlobalOpenTelemetry.getPropagators().getTextMapPropagator()
-        .extract(Context.current(), headers, new TextMapGetter<>() {
-            @Nullable
-            @Override
-            public String get(@Nullable StompHeaders carrier, String key) {
-                return carrier.getFirst(key);
-            }
+    return GlobalOpenTelemetry.getPropagators().getTextMapPropagator()
+            .extract(Context.current(), headers, new TextMapGetter<>() {
+                @Nullable
+                @Override
+                public String get(@Nullable StompHeaders carrier, String key) {
+                    return carrier.getFirst(key);
+                }
 
-            @Override
-            public Iterable<String> keys(StompHeaders carrier) {
-                return headers.toSingleValueMap().keySet();
-            }
-        });
+                @Override
+                public Iterable<String> keys(StompHeaders carrier) {
+                    return headers.toSingleValueMap().keySet();
+                }
+            });
 }
 ```
     
