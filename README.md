@@ -273,7 +273,7 @@ private static Context getTraceContext(StompHeaders headers) {
 }
 ```
     
-And just like before, we call this in order to "makeCurrent()" that context, then within
+And just like before, we "makeCurrent()" the parent context, then within
 that context we create our new `CONSUMER` span:
     
 ```java
