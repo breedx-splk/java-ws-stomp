@@ -316,10 +316,24 @@ the message:
 
 <img width="594" alt="image" src="https://user-images.githubusercontent.com/75337021/216484897-d5e1fc0e-2716-4f0e-a7b4-f54ed5f0c956.png">
 
-<img width="612" alt="image" src="https://user-images.githubusercontent.com/75337021/216202352-18481f6b-23ee-431c-8466-80e000759665.png">
+And finally, our subscriber's `consumer` span, that shows the custom message attributes:
+<img width="601" alt="image" src="https://user-images.githubusercontent.com/75337021/216485715-c6297568-a494-424c-9559-30f66a81a8b9.png">
 
-    
-# improvements
+# conclusion
+
+We've walked through an example of adding manual OpenTelemetry instrumentation to our 
+Spring code in order to trace a websocket-based STOMP protocol message from a publisher,
+through a processor, and finally to the receiver. We've demonstrated specific usage of
+OpenTelemetry Java APIs and how to achieve trace context propagation by reading and writing 
+messaging headers via implementation-specific adaptors.
+
+We rolled up our sleeves and got our hands dirty with some code, but it wasn't that bad
+and the results look good.
+
+This much deeper level of observability is a wildly powerful tool that helps
+developers and operators better understand the flow of data through their systems.
+
+## improvements
     
 This exercise was intended to show how manual instrumentation could be used to 
 stitch together messaging components via trace context propagation. It should not be considered
@@ -330,7 +344,7 @@ complete, and there are several noteworthy shortcomings (possible improvements):
 * the `process` span is a little light on details and could be improved by adding code information.
 * some of the glue code is duplicated
 
-# appendix
+# appendix / resources
 
 * [related discussion](https://github.com/open-telemetry/opentelemetry-java/discussions/3345)
 * [relevant spring websocket tutorial](https://www.baeldung.com/websockets-spring)
