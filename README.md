@@ -12,8 +12,8 @@ Tracing in distributed systems can be challenging, and often moreso
 when messaging systems are involved. To stitch together a comprehensive trace,
 the [trace context](https://opentelemetry.io/docs/instrumentation/js/context/)
 must be propagated between observed components. In HTTP systems, this is relatively
-straightforward, and the W3C HTTP headers are readily propagated by OpenTelemetry
-instrumentation.
+straightforward, and the [W3C HTTP headers](https://www.w3.org/TR/trace-context/#trace-context-http-headers-format)
+are readily propagated by OpenTelemetry instrumentation.
 
 Messaging systems almost always have headers too, but, depending on the implementation, 
 can be tricky to implement. This is further complicated by ability of many messaging
