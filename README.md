@@ -95,8 +95,8 @@ All of these separate traces, none of them linked. We can make this better!
 # adding manual instrumentation
 
 Let's add some manual OpenTelemetry instrumentation to our project in order
-to pass trace context to our components and to improve our traces. We start by adding
-these two OTel dependencies to our `build.gradle.kts` file:
+to pass trace context to our components and to improve our observability story.
+We start by adding these two OTel dependencies to our `build.gradle.kts` file:
 
 ```kotlin
 dependencies {
