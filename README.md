@@ -123,7 +123,7 @@ In keeping with [the specification](https://github.com/open-telemetry/openteleme
 we indicate that the span should be a `PRODUCER`. Because this is the start of our pub/sub process,
 there is no parent and this will be our root span in the trace.
 
-The component downstream from us needs to know our trace context, which includes our span
+The component downstream from us needs to know our trace context, which includes our trace ID + span
 ID parentage. Right now, however, our context is not propagated into the STOMP data frames 
 and we need to write a little code.
 
