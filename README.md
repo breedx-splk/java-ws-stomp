@@ -297,13 +297,13 @@ try (var scope = traceContext.makeCurrent()) {
 ```
 
 It's worth noting that the message `from` and `subject` fields are appended to 
-the `CONSUMER` span in the form of custom attributes. That not strictly required,
+the `CONSUMER` span in the form of custom attributes. That's not strictly required,
 of course, but adds a little more observable detail and depth to the final component
 in our distributed trace.
     
 # improved traces
 
-Now that we've manually instrumeted our code, we run the app for a while 
+Now that we've manually instrumented our code, we run the app for a while 
 and see how the trace has improved. Our messaging trace now looks something like this:
 
 <img width="649" alt="image" src="https://user-images.githubusercontent.com/75337021/216484222-06e17d3c-2981-4531-a3b9-6a44e5cc3577.png">
