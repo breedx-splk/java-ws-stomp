@@ -217,7 +217,7 @@ like this:
 Which in this case looks like this:
 
 ```java
-var serverSpan = tracer.spanBuilder("MessageMapping /tube")
+var serverSpan = tracer.spanBuilder("/tube process")
                 .setSpanKind(SpanKind.SERVER)
                 .startSpan();
 try(Scope x = serverSpan.makeCurrent()){
