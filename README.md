@@ -244,7 +244,8 @@ GlobalOpenTelemetry.getPropagators()
 ```
     
 That's all for the server routing side. A new trace will be created, and our 
-context will be put into the routed message headers. 
+context will be put into the routed message headers. That message will be 
+received by our subscriber.
 
 ## Subscriber
     
